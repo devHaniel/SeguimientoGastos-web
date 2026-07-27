@@ -1,0 +1,68 @@
+<div class="space-y-6">
+  <div class="bg-white rounded-xl shadow-sm p-8">
+    <h1 class="text-3xl font-bold text-gray-800">¡Bienvenido, {{ nombre }}!</h1>
+    <p class="text-gray-500 mt-2">Aquí tienes un resumen de tus finanzas.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase tracking-wide">Saldo del día</p>
+      <p class="text-3xl font-bold mt-1" [class.text-green-600]="saldoHoy() >= 0" [class.text-red-600]="saldoHoy() < 0">
+        {{ formatoMoneda(saldoHoy()) }}
+      </p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase tracking-wide">Saldo del mes</p>
+      <p class="text-3xl font-bold mt-1" [class.text-green-600]="saldoMes() >= 0" [class.text-red-600]="saldoMes() < 0">
+        {{ formatoMoneda(saldoMes()) }}
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-6">
+    <div class="col-span-2 bg-white rounded-xl shadow-sm p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Mayores gastos</h2>
+      @if (mayoresGastos().length) {
+        <div class="space-y-3">
+          @for (gasto of mayoresGastos(); track gasto.id) {
+            @let cat = categoriaMap().get(gasto.categoriaId);
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-800 font-medium">{{ cat?.nombre || '—' }}</p>
+                <p class="text-sm text-gray-400">{{ gasto.fecha }}</p>
+              </div>
+              <p class="text-red-600 font-semibold">-{{ formatoMoneda(gasto.monto) }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-gray-400">No hay gastos este mes.</p>
+      }
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Últimos movimientos</h2>
+      @if (ultimosMovimientos().length) {
+        <div class="space-y-3">
+          @for (mov of ultimosMovimientos(); track mov.id) {
+            @let cat = categoriaMap().get(mov.categoriaId);
+            <div class="flex items-center justify-between">
+              <div class="min-w-0">
+                <p class="text-gray-800 font-medium truncate">{{ mov.descripcion || cat?.nombre || '—' }}</p>
+                <p class="text-sm text-gray-400">{{ mov.fecha }}</p>
+              </div>
+              <p
+                class="font-semibold ml-2"
+                [class.text-green-600]="cat?.tipo === 'INGRESO'"
+                [class.text-red-600]="cat?.tipo === 'GASTO'"
+              >
+                {{ cat?.tipo === 'INGRESO' ? '+' : '-' }}{{ formatoMoneda(mov.monto) }}
+              </p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-gray-400">No hay movimientos este mes.</p>
+      }
+    </div>
+  </div>
+</div>

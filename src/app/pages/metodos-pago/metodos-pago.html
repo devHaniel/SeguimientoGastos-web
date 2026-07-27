@@ -1,0 +1,254 @@
+@if (selectedMetodo()) {
+  <div class="space-y-6">
+    <div class="flex items-center gap-4">
+      <button (click)="volver()" class="text-gray-500 hover:text-gray-800 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ selectedMetodo()?.nombre }}</h1>
+        <p class="text-sm text-gray-500">Movimientos agrupados por fecha</p>
+      </div>
+    </div>
+
+    <div class="flex justify-center">
+      @if (selectedMetodo()?.tipo === 'EFECTIVO') {
+        <div class="bg-gradient-to-br from-green-600 to-green-800 rounded-2xl p-6 text-white shadow-lg w-96">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <p class="text-green-200 text-xs uppercase tracking-wide">Efectivo</p>
+              <p class="text-xl font-bold mt-1">{{ selectedMetodo()?.nombre }}</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-300/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="border-t border-green-500/30 pt-4 grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-green-200 text-xs uppercase">Ingresos</p>
+              <p class="text-lg font-bold text-green-300">{{ formatoMoneda(totalIngresos()) }}</p>
+            </div>
+            <div>
+              <p class="text-green-200 text-xs uppercase">Gastos</p>
+              <p class="text-lg font-bold text-red-300">{{ formatoMoneda(totalGastos()) }}</p>
+            </div>
+            <div>
+              <p class="text-green-200 text-xs uppercase">Movs.</p>
+              <p class="text-lg font-bold">{{ cantidadMovimientos() }}</p>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div
+          class="rounded-2xl p-6 text-white shadow-lg w-96"
+          [class.bg-gradient-to-br]="true"
+          [class.from-blue-600]="selectedMetodo()?.tipo === 'TARJETA_DEBITO'"
+          [class.to-blue-800]="selectedMetodo()?.tipo === 'TARJETA_DEBITO'"
+          [class.from-orange-600]="selectedMetodo()?.tipo === 'TARJETA_CREDITO'"
+          [class.to-orange-800]="selectedMetodo()?.tipo === 'TARJETA_CREDITO'"
+        >
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <p class="text-white/60 text-xs uppercase tracking-wide">
+                {{ selectedMetodo()?.tipo === 'TARJETA_DEBITO' ? 'DÉBITO' : 'CRÉDITO' }}
+              </p>
+              <p class="text-lg font-bold mt-1">{{ selectedMetodo()?.nombre }}</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          </div>
+          <div class="mb-6">
+            <p class="text-white/60 text-xs uppercase tracking-wider mb-1">Número de cuenta</p>
+            <p class="text-xl font-mono tracking-widest">•••• •••• •••• {{ selectedMetodo()?.id?.slice(-4) || '0000' }}</p>
+          </div>
+          <div class="border-t border-white/20 pt-4 grid grid-cols-3 gap-4">
+            <div>
+              <p class="text-white/60 text-xs uppercase">Ingresos</p>
+              <p class="text-lg font-bold text-green-300">{{ formatoMoneda(totalIngresos()) }}</p>
+            </div>
+            <div>
+              <p class="text-white/60 text-xs uppercase">Gastos</p>
+              <p class="text-lg font-bold text-red-300">{{ formatoMoneda(totalGastos()) }}</p>
+            </div>
+            <div>
+              <p class="text-white/60 text-xs uppercase">Movs.</p>
+              <p class="text-lg font-bold">{{ cantidadMovimientos() }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (loadingMovs()) {
+      <p class="text-gray-400 text-center py-12">Cargando movimientos...</p>
+    } @else if (movimientosAgrupados().length === 0) {
+      <p class="text-gray-400 text-center py-12">Sin movimientos registrados.</p>
+    } @else {
+      @for (yearGroup of movimientosAgrupados(); track yearGroup.year) {
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">{{ yearGroup.year }}</h2>
+          @for (monthGroup of yearGroup.months; track monthGroup.month) {
+            <div class="mb-4 last:mb-0">
+              <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">
+                {{ monthGroup.month }}
+              </h3>
+              @for (dayGroup of monthGroup.days; track dayGroup.day) {
+                <div class="mb-3 last:mb-0">
+                  <p class="text-sm font-medium text-gray-600 mb-1">{{ dayGroup.day }}</p>
+                  <div class="space-y-1">
+                    @for (mov of dayGroup.movimientos; track mov.id) {
+                      @let cat = categoriaMap().get(mov.categoriaId);
+                      <div class="flex items-center justify-between py-1 px-3 rounded hover:bg-gray-50">
+                        <div class="flex items-center gap-3 min-w-0">
+                          <span
+                            class="inline-block w-2 h-2 rounded-full shrink-0"
+                            [class.bg-green-500]="cat?.tipo === 'INGRESO'"
+                            [class.bg-red-500]="cat?.tipo === 'GASTO'"
+                          ></span>
+                          <span class="text-sm text-gray-700 truncate">{{ mov.descripcion || cat?.nombre || '—' }}</span>
+                        </div>
+                        <span
+                          class="text-sm font-semibold shrink-0 ml-2"
+                          [class.text-green-600]="cat?.tipo === 'INGRESO'"
+                          [class.text-red-600]="cat?.tipo === 'GASTO'"
+                        >
+                          {{ cat?.tipo === 'INGRESO' ? '+' : '-' }}{{ formatoMoneda(mov.monto) }}
+                        </span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+} @else {
+  <div class="space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-800">Métodos de pago</h1>
+      <button
+        (click)="abrirNuevo()"
+        class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition"
+      >
+        + Nuevo método
+      </button>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 text-gray-600 text-sm">
+          <tr>
+            <th class="px-6 py-3 font-medium">Nombre</th>
+            <th class="px-6 py-3 font-medium">Tipo</th>
+            <th class="px-6 py-3 font-medium text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @for (m of metodos(); track m.id) {
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-gray-800">{{ m.nombre }}</td>
+              <td class="px-6 py-4">
+                <span
+                  class="inline-block px-3 py-1 rounded-full text-xs font-semibold"
+                  [class.bg-gray-100]="m.tipo === 'EFECTIVO'"
+                  [class.text-gray-700]="m.tipo === 'EFECTIVO'"
+                  [class.bg-blue-100]="m.tipo === 'TARJETA_DEBITO'"
+                  [class.text-blue-700]="m.tipo === 'TARJETA_DEBITO'"
+                  [class.bg-orange-100]="m.tipo === 'TARJETA_CREDITO'"
+                  [class.text-orange-700]="m.tipo === 'TARJETA_CREDITO'"
+                >
+                  {{ m.tipo === 'EFECTIVO' ? 'Efectivo' : m.tipo === 'TARJETA_DEBITO' ? 'Tarjeta Débito' : 'Tarjeta Crédito' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right space-x-2">
+                <button
+                  (click)="verMovimientos(m)"
+                  class="text-gray-400 hover:text-teal-600 transition"
+                  title="Ver movimientos"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                </button>
+                <button
+                  (click)="abrirEditar(m)"
+                  class="text-gray-400 hover:text-teal-600 transition"
+                  title="Editar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button
+                  (click)="eliminar(m)"
+                  class="text-gray-400 hover:text-red-600 transition"
+                  title="Eliminar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="px-6 py-12 text-center text-gray-400">
+                No hay métodos de pago registrados.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+@if (showModal()) {
+  <div
+    class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    (click)="cerrarModal()"
+  >
+    <div
+      class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">
+        {{ editando() ? 'Editar método de pago' : 'Nuevo método de pago' }}
+      </h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+          <input
+            type="text"
+            [value]="nombre()"
+            (input)="nombre.set($any($event.target).value)"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+          <select
+            [value]="tipo()"
+            (change)="tipo.set($any($event.target).value)"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+          >
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="TARJETA_DEBITO">Tarjeta de Débito</option>
+            <option value="TARJETA_CREDITO">Tarjeta de Crédito</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button
+            (click)="cerrarModal()"
+            class="px-4 py-2 text-gray-600 hover:text-gray-800 transition"
+          >
+            Cancelar
+          </button>
+          <button
+            (click)="guardar()"
+            [disabled]="loading()"
+            class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 transition"
+          >
+            {{ loading() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
