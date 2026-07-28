@@ -18,9 +18,18 @@
           type="text"
           placeholder="Tu nombre"
           [value]="nombre()"
-          (input)="nombre.set($any($event.target).value)"
-          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition"
+          (input)="nombre.set($any($event.target).value); errNombre.set('')"
+          class="w-full rounded-xl border px-4 py-3 focus:ring-2 outline-none transition"
+          [class.border-red-400]="errNombre()"
+          [class.focus:border-red-500]="errNombre()"
+          [class.focus:ring-red-200]="errNombre()"
+          [class.border-gray-300]="!errNombre()"
+          [class.focus:border-teal-500]="!errNombre()"
+          [class.focus:ring-teal-200]="!errNombre()"
         />
+        @if (errNombre()) {
+          <p class="text-red-500 text-xs mt-1">{{ errNombre() }}</p>
+        }
       </div>
 
       <div>
@@ -29,9 +38,18 @@
           type="email"
           placeholder="tu@email.com"
           [value]="email()"
-          (input)="email.set($any($event.target).value)"
-          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition"
+          (input)="email.set($any($event.target).value); errEmail.set('')"
+          class="w-full rounded-xl border px-4 py-3 focus:ring-2 outline-none transition"
+          [class.border-red-400]="errEmail()"
+          [class.focus:border-red-500]="errEmail()"
+          [class.focus:ring-red-200]="errEmail()"
+          [class.border-gray-300]="!errEmail()"
+          [class.focus:border-teal-500]="!errEmail()"
+          [class.focus:ring-teal-200]="!errEmail()"
         />
+        @if (errEmail()) {
+          <p class="text-red-500 text-xs mt-1">{{ errEmail() }}</p>
+        }
       </div>
 
       <div>
@@ -40,9 +58,18 @@
           type="password"
           placeholder="••••••••"
           [value]="password()"
-          (input)="password.set($any($event.target).value)"
-          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition"
+          (input)="password.set($any($event.target).value); errPassword.set('')"
+          class="w-full rounded-xl border px-4 py-3 focus:ring-2 outline-none transition"
+          [class.border-red-400]="errPassword()"
+          [class.focus:border-red-500]="errPassword()"
+          [class.focus:ring-red-200]="errPassword()"
+          [class.border-gray-300]="!errPassword()"
+          [class.focus:border-teal-500]="!errPassword()"
+          [class.focus:ring-teal-200]="!errPassword()"
         />
+        @if (errPassword()) {
+          <p class="text-red-500 text-xs mt-1">{{ errPassword() }}</p>
+        }
       </div>
 
       <button

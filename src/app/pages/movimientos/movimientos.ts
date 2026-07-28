@@ -3,6 +3,7 @@ import { MovimientoService, Movimiento } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
 import { MetodoPagoService, MetodoPago } from '../../services/metodo-pago';
 import { formatoMonedaDecimal } from '../../utils/moneda';
+import { validarRequerido, validarMonto } from '../../utils/validacion';
 
 @Component({
   selector: 'app-movimientos',
@@ -42,6 +43,11 @@ export class Movimientos {
   categoriaId = signal('');
   metodoPagoId = signal('');
   loading = signal(false);
+
+  errMonto = signal('');
+  errFecha = signal('');
+  errCategoria = signal('');
+  errMetodoPago = signal('');
 
   constructor() {
     this.categoriaService.listar().subscribe((res) => this.categorias.set(res));
@@ -103,6 +109,10 @@ export class Movimientos {
     this.descripcion.set('');
     this.categoriaId.set('');
     this.metodoPagoId.set('');
+    this.errMonto.set('');
+    this.errFecha.set('');
+    this.errCategoria.set('');
+    this.errMetodoPago.set('');
     this.showModal.set(true);
   }
 
@@ -113,6 +123,10 @@ export class Movimientos {
     this.descripcion.set(m.descripcion);
     this.categoriaId.set(m.categoriaId);
     this.metodoPagoId.set(m.metodoPagoId);
+    this.errMonto.set('');
+    this.errFecha.set('');
+    this.errCategoria.set('');
+    this.errMetodoPago.set('');
     this.showModal.set(true);
   }
 
@@ -121,7 +135,12 @@ export class Movimientos {
   }
 
   guardar() {
-    if (!this.monto() || !this.fecha() || !this.categoriaId() || !this.metodoPagoId()) return;
+    this.errMonto.set(validarMonto(this.monto()));
+    this.errFecha.set(validarRequerido(this.fecha(), 'La fecha'));
+    this.errCategoria.set(validarRequerido(this.categoriaId(), 'La categoría'));
+    this.errMetodoPago.set(validarRequerido(this.metodoPagoId(), 'El método de pago'));
+
+    if (this.errMonto() || this.errFecha() || this.errCategoria() || this.errMetodoPago()) return;
 
     this.loading.set(true);
     const data = {

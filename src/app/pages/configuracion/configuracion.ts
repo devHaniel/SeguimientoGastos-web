@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { UsuarioService } from '../../services/usuario';
+import { validarRequerido } from '../../utils/validacion';
 
 @Component({
   selector: 'app-configuracion',
@@ -14,6 +15,9 @@ export class Configuracion {
   loading = signal(false);
   error = signal('');
   exito = signal(false);
+
+  errNombre = signal('');
+  errMoneda = signal('');
 
   constructor() {
     this.cargar();
@@ -33,10 +37,10 @@ export class Configuracion {
   }
 
   guardar() {
-    if (!this.nombre()) {
-      this.error.set('El nombre es obligatorio');
-      return;
-    }
+    this.errNombre.set(validarRequerido(this.nombre(), 'El nombre'));
+    this.errMoneda.set(validarRequerido(this.moneda(), 'La moneda'));
+
+    if (this.errNombre() || this.errMoneda()) return;
 
     this.loading.set(true);
     this.error.set('');

@@ -22,9 +22,18 @@
         <input
           type="text"
           [value]="nombre()"
-          (input)="nombre.set($any($event.target).value)"
-          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition"
+          (input)="nombre.set($any($event.target).value); errNombre.set('')"
+          class="w-full rounded-xl border px-4 py-3 focus:ring-2 outline-none transition"
+          [class.border-red-400]="errNombre()"
+          [class.focus:border-red-500]="errNombre()"
+          [class.focus:ring-red-200]="errNombre()"
+          [class.border-gray-300]="!errNombre()"
+          [class.focus:border-teal-500]="!errNombre()"
+          [class.focus:ring-teal-200]="!errNombre()"
         />
+        @if (errNombre()) {
+          <p class="text-red-500 text-xs mt-1">{{ errNombre() }}</p>
+        }
       </div>
 
       <div>
@@ -39,9 +48,18 @@
           placeholder="$"
           maxlength="5"
           [value]="moneda()"
-          (input)="moneda.set($any($event.target).value)"
-          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition"
+          (input)="moneda.set($any($event.target).value); errMoneda.set('')"
+          class="w-full rounded-xl border px-4 py-3 focus:ring-2 outline-none transition"
+          [class.border-red-400]="errMoneda()"
+          [class.focus:border-red-500]="errMoneda()"
+          [class.focus:ring-red-200]="errMoneda()"
+          [class.border-gray-300]="!errMoneda()"
+          [class.focus:border-teal-500]="!errMoneda()"
+          [class.focus:ring-teal-200]="!errMoneda()"
         />
+        @if (errMoneda()) {
+          <p class="text-red-500 text-xs mt-1">{{ errMoneda() }}</p>
+        }
         <p class="text-xs text-gray-400 mt-1">Símbolo monetario (ej: $, €, £)</p>
       </div>
 

@@ -3,6 +3,7 @@ import { MetodoPagoService, MetodoPago } from '../../services/metodo-pago';
 import { Movimiento } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
 import { formatoMoneda } from '../../utils/moneda';
+import { validarRequerido } from '../../utils/validacion';
 
 @Component({
   selector: 'app-metodos-pago',
@@ -25,6 +26,8 @@ export class MetodosPago {
   nombre = signal('');
   tipo = signal<'EFECTIVO' | 'TARJETA_DEBITO' | 'TARJETA_CREDITO'>('EFECTIVO');
   loading = signal(false);
+
+  errNombre = signal('');
 
   selectedMetodo = signal<MetodoPago | null>(null);
   movimientos = signal<Movimiento[]>([]);
@@ -117,6 +120,7 @@ export class MetodosPago {
     this.editando.set(null);
     this.nombre.set('');
     this.tipo.set('EFECTIVO');
+    this.errNombre.set('');
     this.showModal.set(true);
   }
 
@@ -124,6 +128,7 @@ export class MetodosPago {
     this.editando.set(m);
     this.nombre.set(m.nombre);
     this.tipo.set(m.tipo);
+    this.errNombre.set('');
     this.showModal.set(true);
   }
 
@@ -132,7 +137,8 @@ export class MetodosPago {
   }
 
   guardar() {
-    if (!this.nombre()) return;
+    this.errNombre.set(validarRequerido(this.nombre(), 'El nombre'));
+    if (this.errNombre()) return;
 
     this.loading.set(true);
     const data = { nombre: this.nombre(), tipo: this.tipo() };

@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CategoriaService, Categoria } from '../../services/categoria';
+import { validarRequerido } from '../../utils/validacion';
 
 @Component({
   selector: 'app-categorias',
@@ -15,6 +16,8 @@ export class Categorias {
   tipo = signal<'INGRESO' | 'GASTO'>('INGRESO');
   loading = signal(false);
 
+  errNombre = signal('');
+
   constructor() {
     this.cargar();
   }
@@ -27,6 +30,7 @@ export class Categorias {
     this.editando.set(null);
     this.nombre.set('');
     this.tipo.set('INGRESO');
+    this.errNombre.set('');
     this.showModal.set(true);
   }
 
@@ -34,6 +38,7 @@ export class Categorias {
     this.editando.set(cat);
     this.nombre.set(cat.nombre);
     this.tipo.set(cat.tipo);
+    this.errNombre.set('');
     this.showModal.set(true);
   }
 
@@ -42,7 +47,8 @@ export class Categorias {
   }
 
   guardar() {
-    if (!this.nombre()) return;
+    this.errNombre.set(validarRequerido(this.nombre(), 'El nombre'));
+    if (this.errNombre()) return;
 
     this.loading.set(true);
     const data = { nombre: this.nombre(), tipo: this.tipo() };

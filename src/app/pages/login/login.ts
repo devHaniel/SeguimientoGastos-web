@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
+import { validarEmail, validarRequerido } from '../../utils/validacion';
 
 @Component({
   selector: 'app-login',
@@ -16,14 +17,24 @@ export class Login {
   error = signal('');
   loading = signal(false);
 
+  errEmail = signal('');
+  errPassword = signal('');
+
+  private limpiarErrores() {
+    this.errEmail.set('');
+    this.errPassword.set('');
+    this.error.set('');
+  }
+
   iniciarSesion() {
-    if (!this.email() || !this.password()) {
-      this.error.set('Todos los campos son obligatorios');
-      return;
-    }
+    this.limpiarErrores();
+
+    this.errEmail.set(validarEmail(this.email()));
+    this.errPassword.set(validarRequerido(this.password(), 'La contraseña'));
+
+    if (this.errEmail() || this.errPassword()) return;
 
     this.loading.set(true);
-    this.error.set('');
 
     this.auth
       .login({
