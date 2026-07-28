@@ -125,7 +125,7 @@
               [class.text-green-600]="cat?.tipo === 'INGRESO'"
               [class.text-red-600]="cat?.tipo === 'GASTO'"
             >
-              {{ cat?.tipo === 'INGRESO' ? '+' : '-' }}${{ formatoMoneda(m.monto) }}
+              {{ cat?.tipo === 'INGRESO' ? '+' : '-' }}{{ formatoMonedaDecimal(m.monto) }}
             </td>
             <td class="px-6 py-4 text-right space-x-2">
               <button

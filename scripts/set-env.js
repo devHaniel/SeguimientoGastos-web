@@ -4,9 +4,13 @@ const path = require('path');
 const envPath = path.resolve(__dirname, '..', '.env');
 const configPath = path.resolve(__dirname, '..', 'src', 'app', 'config.ts');
 
-let apiUrl = process.env.API_URL || 'http://localhost:3000/api';
+const isDev = process.argv.includes('--dev');
 
-if (!process.env.API_URL && fs.existsSync(envPath)) {
+let apiUrl = process.env.API_URL || 'http://localhost:8080/api';
+
+if (isDev) {
+  apiUrl = 'http://localhost:8080/api';
+} else if (!process.env.API_URL && fs.existsSync(envPath)) {
   const envContent = fs.readFileSync(envPath, 'utf-8');
   for (const line of envContent.split('\n')) {
     const trimmed = line.trim();

@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { EstadisticaService, Resumen, ResumenPorMetodo } from '../../services/estadistica';
+import { formatoMoneda } from '../../utils/moneda';
 
 @Component({
   selector: 'app-estadisticas',
@@ -90,14 +91,7 @@ export class Estadisticas {
     });
   }
 
-  formatoMoneda(n: number) {
-    return n.toLocaleString('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  }
+  protected formatoMoneda = formatoMoneda;
 
   maxPorMetodo = computed(() => {
     const items = this.porMetodo();

@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MetodoPagoService, MetodoPago } from '../../services/metodo-pago';
 import { Movimiento } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
+import { formatoMoneda } from '../../utils/moneda';
 
 @Component({
   selector: 'app-metodos-pago',
@@ -154,12 +155,5 @@ export class MetodosPago {
     this.service.eliminar(m.id).subscribe(() => this.cargar());
   }
 
-  formatoMoneda(n: number) {
-    return n.toLocaleString('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  }
+  protected formatoMoneda = formatoMoneda;
 }

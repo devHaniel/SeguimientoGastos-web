@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { MovimientoService, Movimiento } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
+import { formatoMoneda } from '../../utils/moneda';
 
 @Component({
   selector: 'app-dashboard',
@@ -62,12 +63,5 @@ export class Dashboard {
     return total;
   }
 
-  formatoMoneda(n: number) {
-    return n.toLocaleString('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  }
+  protected formatoMoneda = formatoMoneda;
 }

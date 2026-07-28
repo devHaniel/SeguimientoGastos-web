@@ -8,6 +8,7 @@ import { Estadisticas } from './pages/estadisticas/estadisticas';
 import { Movimientos } from './pages/movimientos/movimientos';
 import { Categorias } from './pages/categorias/categorias';
 import { MetodosPago } from './pages/metodos-pago/metodos-pago';
+import { Configuracion } from './pages/configuracion/configuracion';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -24,6 +25,7 @@ export const routes: Routes = [
       { path: 'movimientos', component: Movimientos },
       { path: 'categorias', component: Categorias },
       { path: 'metodos-pago', component: MetodosPago },
+      { path: 'configuracion', component: Configuracion },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

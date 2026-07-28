@@ -11,7 +11,7 @@ export class Auth {
     }
 
     login(data: { email: string; password: string }) {
-        return this.http.post<{ email: string; nombre: string; token: string }>('/auth/login', data);
+        return this.http.post<{ id: string; email: string; nombre: string; moneda: string; token: string }>('/auth/login', data);
     }
 
 }

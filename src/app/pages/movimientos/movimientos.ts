@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MovimientoService, Movimiento } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
 import { MetodoPagoService, MetodoPago } from '../../services/metodo-pago';
+import { formatoMonedaDecimal } from '../../utils/moneda';
 
 @Component({
   selector: 'app-movimientos',
@@ -145,7 +146,7 @@ export class Movimientos {
   }
 
   eliminar(m: Movimiento) {
-    if (!confirm(`¿Eliminar movimiento del ${m.fecha} por $${m.monto}?`)) return;
+    if (!confirm(`¿Eliminar movimiento del ${m.fecha} por ${formatoMonedaDecimal(m.monto)}?`)) return;
     this.movimientoService.eliminar(m.id).subscribe(() => this.cargar());
   }
 
@@ -153,7 +154,5 @@ export class Movimientos {
     this.monto.set(parseFloat(valor) || 0);
   }
 
-  formatoMoneda(n: number) {
-    return n.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
+  protected formatoMonedaDecimal = formatoMonedaDecimal;
 }

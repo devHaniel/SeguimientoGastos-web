@@ -35,6 +35,7 @@ export class Login {
           localStorage.setItem('token', res.token);
           localStorage.setItem('nombre', res.nombre);
           localStorage.setItem('email', res.email);
+          localStorage.setItem('moneda', res.moneda || '$');
           this.router.navigate(['/app/dashboard']);
         },
         error: (err) => {
