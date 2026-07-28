@@ -10,10 +10,19 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 export class MainLayout {
   private router = inject(Router);
   showMenu = signal(false);
+  sidebarOpen = signal(false);
   nombre = localStorage.getItem('nombre') || 'Usuario';
 
   toggleMenu() {
     this.showMenu.update((v) => !v);
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen.update((v) => !v);
+  }
+
+  closeSidebar() {
+    this.sidebarOpen.set(false);
   }
 
   cerrarSesion() {

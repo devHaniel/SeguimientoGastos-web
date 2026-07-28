@@ -1,95 +1,125 @@
-<div class="flex h-screen bg-gray-50 p-4 gap-4">
-  <aside class="w-64 bg-teal-800 text-white flex flex-col rounded-2xl shadow-2xl">
-    <div class="p-6 text-xl font-bold border-b border-teal-700">
-      Seguimiento Gastos
+<div class="min-h-screen bg-gray-50">
+  <!-- Mobile top bar -->
+  <div class="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-teal-800 text-white px-4 py-3 shadow-lg">
+    <button (click)="toggleSidebar()" class="p-2 rounded-lg hover:bg-teal-700 transition" aria-label="Abrir menú">
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    <span class="font-bold text-lg">Seguimiento Gastos</span>
+    <div class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-sm font-bold">
+      {{ nombre.charAt(0).toUpperCase() }}
     </div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a
-        routerLink="/app/dashboard"
-        routerLinkActive="bg-teal-700"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Dashboard
-      </a>
-      <a
-        routerLink="/app/estadisticas"
-        routerLinkActive="bg-teal-700"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        Estadísticas
-      </a>
-      <a
-        routerLink="/app/movimientos"
-        routerLinkActive="bg-teal-700"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Movimientos
-      </a>
-      <a
-        routerLink="/app/categorias"
-        routerLinkActive="bg-teal-700"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-        Categorías
-      </a>
-      <a
-        routerLink="/app/metodos-pago"
-        routerLinkActive="bg-teal-700"
-        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-        Métodos de pago
-      </a>
-    </nav>
-    <div class="relative border-t border-teal-700 p-4">
-      <button
-        (click)="toggleMenu()"
-        class="flex items-center gap-3 w-full px-2 py-2 rounded-lg hover:bg-teal-700 transition"
-      >
-        <div class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-sm font-bold">
-          {{ nombre.charAt(0).toUpperCase() }}
-        </div>
-        <span class="text-sm font-medium truncate">{{ nombre }}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 ml-auto transition-transform"
-          [class.rotate-180]="showMenu()"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+  </div>
 
-      @if (showMenu()) {
-        <div
-          class="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl shadow-xl py-2 text-gray-700 overflow-hidden"
+  <!-- Overlay backdrop for mobile -->
+  @if (sidebarOpen()) {
+    <div class="fixed inset-0 bg-black/50 z-30 lg:hidden" (click)="closeSidebar()"></div>
+  }
+
+  <div class="flex lg:h-screen lg:p-4 lg:gap-4 pt-16 lg:pt-0">
+    <!-- Sidebar -->
+    <aside
+      class="fixed inset-y-0 left-0 z-40 w-64 bg-teal-800 text-white flex flex-col transition-transform duration-300 -translate-x-full lg:static lg:translate-x-0 lg:rounded-2xl lg:shadow-2xl"
+      [class.translate-x-0]="sidebarOpen()"
+    >
+      <div class="p-6 text-xl font-bold border-b border-teal-700">
+        Seguimiento Gastos
+      </div>
+      <nav class="flex-1 p-4 space-y-2">
+        <a
+          routerLink="/app/dashboard"
+          routerLinkActive="bg-teal-700"
+          (click)="closeSidebar()"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
         >
-          <a
-            routerLink="/app/configuracion"
-            (click)="showMenu.set(false)"
-            class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition text-sm"
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard
+        </a>
+        <a
+          routerLink="/app/estadisticas"
+          routerLinkActive="bg-teal-700"
+          (click)="closeSidebar()"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Estadísticas
+        </a>
+        <a
+          routerLink="/app/movimientos"
+          routerLinkActive="bg-teal-700"
+          (click)="closeSidebar()"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Movimientos
+        </a>
+        <a
+          routerLink="/app/categorias"
+          routerLinkActive="bg-teal-700"
+          (click)="closeSidebar()"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+          Categorías
+        </a>
+        <a
+          routerLink="/app/metodos-pago"
+          routerLinkActive="bg-teal-700"
+          (click)="closeSidebar()"
+          class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-teal-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          Métodos de pago
+        </a>
+      </nav>
+      <div class="relative border-t border-teal-700 p-4">
+        <button
+          (click)="toggleMenu()"
+          class="flex items-center gap-3 w-full px-2 py-2 rounded-lg hover:bg-teal-700 transition"
+        >
+          <div class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-sm font-bold">
+            {{ nombre.charAt(0).toUpperCase() }}
+          </div>
+          <span class="text-sm font-medium truncate">{{ nombre }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-auto transition-transform"
+            [class.rotate-180]="showMenu()"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            Configuración
-          </a>
-          <button
-            (click)="cerrarSesion()"
-            class="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-gray-50 transition text-sm text-red-600"
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        @if (showMenu()) {
+          <div
+            class="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl shadow-xl py-2 text-gray-700 overflow-hidden"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Salir
-          </button>
-        </div>
-      }
-    </div>
-  </aside>
-  <main class="flex-1 overflow-auto bg-white rounded-2xl shadow-2xl p-8">
-    <router-outlet />
-  </main>
+            <a
+              routerLink="/app/configuracion"
+              (click)="showMenu.set(false)"
+              class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition text-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Configuración
+            </a>
+            <button
+              (click)="cerrarSesion()"
+              class="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-gray-50 transition text-sm text-red-600"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              Salir
+            </button>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-auto bg-white min-h-screen lg:min-h-0 lg:rounded-2xl lg:shadow-2xl p-4 lg:p-8">
+      <router-outlet />
+    </main>
+  </div>
 </div>
