@@ -75,6 +75,7 @@ export class Movimientos {
     const filtro: MovimientoFilter = {
       pagina: this.pagina(),
       tamanio: this.tamanio(),
+      sort: 'fecha,desc',
     };
 
     const mes = this.filtroMes();

@@ -102,7 +102,7 @@ export class MetodosPago {
   verMovimientos(m: MetodoPago) {
     this.selectedMetodo.set(m);
     this.loadingMovs.set(true);
-    this.service.movimientos(m.id, { tamanio: 10000 }).subscribe({
+    this.service.movimientos(m.id, { tamanio: 10000, sort: 'fecha,desc' }).subscribe({
       next: (res) => {
         this.movimientos.set(res.contenido);
         this.loadingMovs.set(false);

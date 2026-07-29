@@ -84,10 +84,14 @@ export class Estadisticas {
     this.loading.set(true);
     this.service.resumen({ periodo: this.periodoActivo() }).subscribe({
       next: (res) => {
+        console.log('Estadísticas response', res);
         this.data.set(res);
         this.loading.set(false);
       },
-      error: () => (this.loading.set(false)),
+      error: (err) => {
+        console.error('Error al carrar estadísticas', err);
+        this.loading.set(false);
+      },
     });
   }
 

@@ -34,11 +34,12 @@ export class MetodoPagoService {
     return this.http.delete(`/metodo-pago/${id}`);
   }
 
-  movimientos(id: string, filtro?: { pagina?: number; tamanio?: number }) {
+  movimientos(id: string, filtro?: { pagina?: number; tamanio?: number; sort?: string }) {
     let params = new HttpParams();
     if (filtro) {
       if (filtro.pagina !== undefined) params = params.set('pagina', filtro.pagina);
       if (filtro.tamanio !== undefined) params = params.set('tamanio', filtro.tamanio);
+      if (filtro.sort) params = params.set('sort', filtro.sort);
     }
     return this.http.get<Movimiento[] | PaginatedResponse<Movimiento>>(`/metodo-pago/${id}/movimientos`, { params }).pipe(
       map((res) => {
