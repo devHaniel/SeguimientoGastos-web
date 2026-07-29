@@ -51,7 +51,7 @@ export class Dashboard {
 
   constructor() {
     this.categoriaService.listar().subscribe((res) => this.categorias.set(res));
-    this.movimientoService.listar().subscribe((res) => this.movimientos.set(res));
+    this.movimientoService.listar({ tamanio: 10000 }).subscribe((res) => this.movimientos.set(res.contenido));
   }
 
   private calcularSaldo(lista: Movimiento[]) {

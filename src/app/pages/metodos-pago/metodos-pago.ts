@@ -102,9 +102,9 @@ export class MetodosPago {
   verMovimientos(m: MetodoPago) {
     this.selectedMetodo.set(m);
     this.loadingMovs.set(true);
-    this.service.movimientos(m.id).subscribe({
+    this.service.movimientos(m.id, { tamanio: 10000 }).subscribe({
       next: (res) => {
-        this.movimientos.set(res);
+        this.movimientos.set(res.contenido);
         this.loadingMovs.set(false);
       },
       error: () => (this.loadingMovs.set(false)),

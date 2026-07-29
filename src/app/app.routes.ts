@@ -10,11 +10,12 @@ import { Categorias } from './pages/categorias/categorias';
 import { MetodosPago } from './pages/metodos-pago/metodos-pago';
 import { Configuracion } from './pages/configuracion/configuracion';
 import { authGuard } from './guards/auth.guard';
+import { guestGuard } from './guards/guest.guard';
 
 export const routes: Routes = [
-  { path: '', component: Landing },
-  { path: 'register', component: Register },
-  { path: 'login', component: Login },
+  { path: '', component: Landing, canActivate: [guestGuard] },
+  { path: 'register', component: Register, canActivate: [guestGuard] },
+  { path: 'login', component: Login, canActivate: [guestGuard] },
   {
     path: 'app',
     component: MainLayout,

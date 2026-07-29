@@ -47,8 +47,13 @@ export class Register {
         passwordHash: this.password(),
       })
       .subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
+        next: (res) => {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('refresh_token', res.refresh_token);
+          localStorage.setItem('nombre', res.nombre);
+          localStorage.setItem('email', res.email);
+          localStorage.setItem('moneda', res.moneda || '$');
+          this.router.navigate(['/app/dashboard']);
         },
         error: (err) => {
           this.error.set(err.error?.message || 'Error al registrar');

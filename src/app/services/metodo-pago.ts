@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { Movimiento } from './movimiento';
+import { map } from 'rxjs';
+import { Movimiento, PaginatedResponse } from './movimiento';
 
 export interface MetodoPago {
   id: string;
@@ -33,7 +34,30 @@ export class MetodoPagoService {
     return this.http.delete(`/metodo-pago/${id}`);
   }
 
-  movimientos(id: string) {
-    return this.http.get<Movimiento[]>(`/metodo-pago/${id}/movimientos`);
+  movimientos(id: string, filtro?: { pagina?: number; tamanio?: number }) {
+    let params = new HttpParams();
+    if (filtro) {
+      if (filtro.pagina !== undefined) params = params.set('pagina', filtro.pagina);
+      if (filtro.tamanio !== undefined) params = params.set('tamanio', filtro.tamanio);
+    }
+    return this.http.get<Movimiento[] | PaginatedResponse<Movimiento>>(`/metodo-pago/${id}/movimientos`, { params }).pipe(
+      map((res) => {
+        if (Array.isArray(res)) {
+          const pagina = filtro?.pagina ?? 0;
+          const tamanio = filtro?.tamanio ?? 10;
+          const totalPaginas = Math.ceil(res.length / tamanio) || 1;
+          const inicio = pagina * tamanio;
+          return {
+            contenido: res.slice(inicio, inicio + tamanio),
+            pagina,
+            tamanio,
+            totalElementos: res.length,
+            totalPaginas,
+            ultima: pagina >= totalPaginas - 1,
+          };
+        }
+        return res;
+      })
+    );
   }
 }

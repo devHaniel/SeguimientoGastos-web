@@ -44,6 +44,7 @@ export class Login {
       .subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
+          localStorage.setItem('refresh_token', res.refresh_token);
           localStorage.setItem('nombre', res.nombre);
           localStorage.setItem('email', res.email);
           localStorage.setItem('moneda', res.moneda || '$');

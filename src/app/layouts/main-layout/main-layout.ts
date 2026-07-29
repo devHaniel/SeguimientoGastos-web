@@ -1,5 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { finalize } from 'rxjs';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-main-layout',
@@ -9,6 +11,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 })
 export class MainLayout {
   private router = inject(Router);
+  private auth = inject(Auth);
   showMenu = signal(false);
   sidebarOpen = signal(false);
   nombre = localStorage.getItem('nombre') || 'Usuario';
@@ -26,7 +29,12 @@ export class MainLayout {
   }
 
   cerrarSesion() {
-    localStorage.clear();
-    this.router.navigate(['/login']);
+    const refreshToken = localStorage.getItem('refresh_token') || undefined;
+    this.auth.logout(refreshToken).pipe(
+      finalize(() => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      })
+    ).subscribe();
   }
 }

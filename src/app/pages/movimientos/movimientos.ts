@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MovimientoService, Movimiento } from '../../services/movimiento';
+import { MovimientoService, Movimiento, MovimientoFilter } from '../../services/movimiento';
 import { CategoriaService, Categoria } from '../../services/categoria';
 import { MetodoPagoService, MetodoPago } from '../../services/metodo-pago';
 import { formatoMonedaDecimal } from '../../utils/moneda';
@@ -18,6 +18,12 @@ export class Movimientos {
   categorias = signal<Categoria[]>([]);
   metodosPago = signal<MetodoPago[]>([]);
 
+  pagina = signal(0);
+  tamanio = signal(10);
+  totalPaginas = signal(0);
+  totalElementos = signal(0);
+  cargando = signal(false);
+
   categoriaMap = computed(() => {
     const map = new Map<string, Categoria>();
     for (const c of this.categorias()) map.set(c.id, c);
@@ -35,6 +41,8 @@ export class Movimientos {
   filtroMes = signal(this.obtenerMesActual());
   filtroTipo = signal<'INGRESO' | 'GASTO' | ''>('');
 
+  error = signal('');
+
   showModal = signal(false);
   editando = signal<Movimiento | null>(null);
   monto = signal(0);
@@ -49,6 +57,9 @@ export class Movimientos {
   errCategoria = signal('');
   errMetodoPago = signal('');
 
+  hayAnterior = computed(() => this.pagina() > 0);
+  haySiguiente = computed(() => this.pagina() < this.totalPaginas() - 1);
+
   constructor() {
     this.categoriaService.listar().subscribe((res) => this.categorias.set(res));
     this.metodoPagoService.listar().subscribe((res) => this.metodosPago.set(res));
@@ -60,34 +71,56 @@ export class Movimientos {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
 
-  cargar() {
-    this.movimientoService.listar().subscribe((res) => this.movimientos.set(res));
+  private construirFiltro(): MovimientoFilter {
+    const filtro: MovimientoFilter = {
+      pagina: this.pagina(),
+      tamanio: this.tamanio(),
+    };
+
+    const mes = this.filtroMes();
+    if (mes && mes !== this.obtenerMesActual()) {
+      filtro.fechaDesde = `${mes}-01`;
+      const [y, m] = mes.split('-').map(Number);
+      const ultimoDia = new Date(y, m, 0).getDate();
+      filtro.fechaHasta = `${mes}-${String(ultimoDia).padStart(2, '0')}`;
+    }
+
+    if (this.filtroCategoriaId()) filtro.categoriaId = this.filtroCategoriaId();
+    if (this.filtroMetodoPagoId()) filtro.metodoPagoId = this.filtroMetodoPagoId();
+    const tipo = this.filtroTipo();
+    if (tipo) filtro.tipo = tipo;
+
+    return filtro;
   }
 
-  movimientosFiltrados = computed(() => {
-    let lista = [...this.movimientos()];
+  cargar() {
+    this.error.set('');
+    this.cargando.set(true);
+    this.movimientoService.listar(this.construirFiltro()).subscribe({
+      next: (res) => {
+        this.movimientos.set(res.contenido ?? []);
+        this.pagina.set(res.pagina);
+        this.totalPaginas.set(res.totalPaginas);
+        this.totalElementos.set(res.totalElementos);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar movimientos', err);
+        this.error.set(err.error?.message || 'Error al cargar movimientos');
+        this.cargando.set(false);
+      },
+    });
+  }
 
-    if (this.filtroMes()) {
-      lista = lista.filter((m) => m.fecha.startsWith(this.filtroMes()));
-    }
+  aplicarFiltro() {
+    this.pagina.set(0);
+    this.cargar();
+  }
 
-    if (this.filtroCategoriaId()) {
-      lista = lista.filter((m) => m.categoriaId === this.filtroCategoriaId());
-    }
-
-    if (this.filtroMetodoPagoId()) {
-      lista = lista.filter((m) => m.metodoPagoId === this.filtroMetodoPagoId());
-    }
-
-    if (this.filtroTipo()) {
-      lista = lista.filter((m) => {
-        const cat = this.categoriaMap().get(m.categoriaId);
-        return cat?.tipo === this.filtroTipo();
-      });
-    }
-
-    return lista.sort((a, b) => b.fecha.localeCompare(a.fecha));
-  });
+  cambiarPagina(p: number) {
+    this.pagina.set(p);
+    this.cargar();
+  }
 
   categoriasFiltradas = computed(() => {
     const tipo = this.filtroTipo();
