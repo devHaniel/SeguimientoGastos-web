@@ -31,10 +31,7 @@ export class MainLayout {
   cerrarSesion() {
     const refreshToken = localStorage.getItem('refresh_token') || undefined;
     this.auth.logout(refreshToken).pipe(
-      finalize(() => {
-        localStorage.clear();
-        this.router.navigate(['/login']);
-      })
+      finalize(() => this.auth.limpiarSesion())
     ).subscribe();
   }
 }

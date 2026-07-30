@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { Router } from '@angular/router';
 
 export interface AuthResponse {
   id: string;
@@ -14,6 +15,7 @@ export interface AuthResponse {
 export class Auth {
 
     private http = inject(HttpClient);
+    private router = inject(Router);
 
     registrar(data: { nombre: string; email: string; passwordHash: string }) {
         return this.http.post<AuthResponse>('/auth/register', data);
@@ -31,6 +33,15 @@ export class Auth {
         const body: Record<string, string> = {};
         if (refreshToken) body['refresh_token'] = refreshToken;
         return this.http.post('/auth/logout', body);
+    }
+
+    verificarToken(token: string) {
+        return this.http.post<{ expirado: boolean }>('/auth/verificar-token', { token });
+    }
+
+    limpiarSesion() {
+        localStorage.clear();
+        this.router.navigate(['/login']);
     }
 
 }
