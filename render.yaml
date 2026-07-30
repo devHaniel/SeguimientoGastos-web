@@ -1,7 +1,7 @@
 staticSites:
   - name: seguimiento-gastos-web
     buildCommand: npm run build
-    publishPath: dist/seguimientoGastosWeb
+    publishPath: dist/seguimientoGastosWeb/browser
     routes:
       - type: rewrite
         source: /*
